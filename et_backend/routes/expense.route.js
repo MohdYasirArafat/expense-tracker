@@ -16,6 +16,4 @@ expenseRouter.get("/summary", authMiddleware, getSummary);
 expenseRouter.get("/category", authMiddleware, getCategory);
 
 
-
-
 module.exports = expenseRouter;

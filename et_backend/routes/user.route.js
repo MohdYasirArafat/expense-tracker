@@ -6,16 +6,6 @@ const { registerUser, loginUser, logoutUser, refreshAccessToken } = require("../
 
 const userRouter = express.Router();
 
-// //user routes
-// userRouter.post('/signup',registerUser);
-// userRouter.post('/login',loginUser);
-// // userRouter.get('/logout',logoutUser);
-// // routes/user.route.js mein ise change karein:
-// userRouter.post('/logout', logoutUser); // ✅ HTTP POST Method use karein
-
-
-// Routes block update karein:
-
 userRouter.post("/signup", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", logoutUser);
