@@ -365,6 +365,34 @@ const registerUser = async (req, res) => {
 };
 
 // 2. LOGIN CONTROLLER
+// const loginUser = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+//     if (!user) return res.status(400).json({ message: "User not found" });
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) return res.status(400).json({ message: "Wrong password" });
+
+//     const accessToken = generateAccessToken(user);
+//     const refreshToken = generateRefreshToken(user);
+
+//     // Save refresh token in Database
+//     user.refreshToken = refreshToken;
+//     await user.save();
+
+//     // Set cookies seamlessly
+//     res.cookie("accessToken", accessToken, getCookieOptions(15 * 60 * 1000)); // 15 Mins
+//     res.cookie("refreshToken", refreshToken, getCookieOptions(7 * 24 * 60 * 60 * 1000)); // 7 Days
+//     return res.json({ message: "Login successful" });
+//   } catch (error) {
+//     console.log("Login error:", error);
+//     return res.status(500).json({ message: "Server error during login" });
+//   }
+// };
+
+
+// 🟢 LOGIN CONTROLLER (Update this function)
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -377,19 +405,25 @@ const loginUser = async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Save refresh token in Database
     user.refreshToken = refreshToken;
     await user.save();
 
-    // Set cookies seamlessly
-    res.cookie("accessToken", accessToken, getCookieOptions(15 * 60 * 1000)); // 15 Mins
-    res.cookie("refreshToken", refreshToken, getCookieOptions(7 * 24 * 60 * 60 * 1000)); // 7 Days
-    return res.json({ message: "Login successful" });
+    // 🟢 LOCAL KE LIYE COOKIE BHI RAHEGI, PRODUCTION KE LIYE TOKENS JSON ME BHI JAYENGE
+    res.cookie("accessToken", accessToken, getCookieOptions(15 * 60 * 1000));
+    res.cookie("refreshToken", refreshToken, getCookieOptions(7 * 24 * 60 * 60 * 1000));
+
+    return res.json({ 
+      message: "Login successful",
+      accessToken, // 👈 Send directly to frontend
+      refreshToken, // 👈 Send directly to frontend
+      user: { _id: user._id, name: user.name, email: user.email }
+    });
   } catch (error) {
     console.log("Login error:", error);
     return res.status(500).json({ message: "Server error during login" });
   }
 };
+
 
 // 3. ✅ SILENT REFRESH CONTROLLER (FULLY SECURED)
 const refreshAccessToken = async (req, res) => {
