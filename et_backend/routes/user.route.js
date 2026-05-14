@@ -9,7 +9,7 @@ const userRouter = express.Router();
 userRouter.post("/signup", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", logoutUser);
-userRouter.post("/refresh", refreshAccessToken); // ✅ Linked smoothly with axios.post('/auth/refresh')
+userRouter.post("/refresh", refreshAccessToken); //  Linked smoothly with axios.post('/auth/refresh')
 
 
 // NEW: protected route (LOGIN CHECK)
