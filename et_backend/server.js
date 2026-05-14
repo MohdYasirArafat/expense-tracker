@@ -19,14 +19,36 @@ app.use(cookieParser())
 //   credentials: true
 // }));
 
+// server.js (Double check this configuration)
+// server.js (Replace your current app.use(cors(...)) with this block)
+// const cors = require("cors");
+
+// Define an array of all allowed frontend URLs
+const allowedOrigins = [
+  "http://localhost:5173",                              // Local Development URL
+  "http://127.0.0.1:5173",                            // Alternative Local Host mapping
+  "https://expense-tracker-frontend-zaxy.onrender.com" // Live Production Frontend URL
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // e.g., onrender.com
-    credentials: true,                // Cookies allow karne ke liye
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Saare REST methods handle karne ke liye
-    optionsSuccessStatus: 200,        // Legacy browsers (Edge/Safari older versions) ke liye crash controller
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS policy"));
+      }
+    },
+    credentials: true, // Crucial to allow reading/writing HttpOnly cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    optionsSuccessStatus: 200,
   })
 );
+;
+
 
 app.use('/api/user',userRouter);
 app.use('/api/expense',expenseRouter);

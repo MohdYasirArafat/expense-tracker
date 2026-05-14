@@ -310,12 +310,25 @@ const User = require("../models/user.model.js");
 const bcrypt = require("bcryptjs");
 
 // 🔑 Common Cookie Options for Dev and Production
-const getCookieOptions = (customMaxAge) => ({
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production", // Prod me automatic true hoga
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-domain ke liye prod me 'none'
-  maxAge: customMaxAge,
-});
+// const getCookieOptions = (customMaxAge) => ({
+//   httpOnly: true,
+//   secure: process.env.NODE_ENV === "production", // Prod me automatic true hoga
+//   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-domain ke liye prod me 'none'
+//   maxAge: customMaxAge,
+// });
+
+// controllers/user.controller.js (Update this function)
+const getCookieOptions = (customMaxAge) => {
+  const isProd = process.env.NODE_ENV === "production";
+  
+  return {
+    httpOnly: true,
+    secure: true, // 🟢 Render runs on HTTPS, this MUST always be true in production!
+    sameSite: isProd ? "none" : "lax", // 🟢 Must be "none" for cross-subdomain access on Render
+    maxAge: customMaxAge,
+  };
+};
+
 
 // 🔑 Token Generators (Dono ki life ko cookie life ke sath same rakhein)
 const generateAccessToken = (user) => {
