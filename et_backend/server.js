@@ -14,23 +14,19 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json())
 app.use(cookieParser())
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://expense-tracker-frontend-zaxy.onrender.com"
-];
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL,
+//   credentials: true
+// }));
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
-
-app.options(/.*/, cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // e.g., onrender.com
+    credentials: true,                // Cookies allow karne ke liye
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Saare REST methods handle karne ke liye
+    optionsSuccessStatus: 200,        // Legacy browsers (Edge/Safari older versions) ke liye crash controller
+  })
+);
 
 app.use('/api/user',userRouter);
 app.use('/api/expense',expenseRouter);
